@@ -1,14 +1,12 @@
 <template>
-  <div id="app">
-    <router-view />
-  </div>
+  <div>空白页面</div>
 </template>
 
 <script>
 export default {
-  name: "App",
+  name: "management",
 };
 </script>
 
-<style>
+<style scoped>
 </style>
