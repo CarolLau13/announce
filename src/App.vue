@@ -11,4 +11,11 @@ export default {
 </script>
 
 <style>
+@import "./css/normalize.css";
+
+html,
+body,
+#app {
+  height: 100%;
+}
 </style>

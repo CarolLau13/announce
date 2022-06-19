@@ -21,17 +21,16 @@ export default {
   },
   created() {
     axios.get("http://localhost:30000/announce").then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
       this.info = res.data;
-      this.$message("加载完成");
+      this.$message({
+        type: "success",
+        message: "加载完成",
+      });
     });
   },
 };
 </script>
 
 <style scoped>
-button {
-  display: block;
-  margin: 0 auto;
-}
 </style>

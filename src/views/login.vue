@@ -12,6 +12,7 @@
       <el-input
         placeholder="密码"
         prefix-icon="el-icon-lock"
+        show-password
         class="psd"
         v-model="password"
       >
@@ -40,12 +41,15 @@ export default {
           password: this.password,
         })
         .then((res) => {
-          console.log(res);
-          this.$message("登录成功！");
-          this.$router.push("/management");
+          // console.log(res);
+          this.$message({
+            type: "success",
+            message: "登录成功!",
+          });
+          this.$router.push("/admin");
         })
         .catch((res) => {
-          this.$message("登录失败！");
+          this.$message.error("登录失败！");
         });
     },
   },
