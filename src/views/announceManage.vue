@@ -123,7 +123,7 @@ export default {
         .get("/api/announce")
         .then((res) => {
           // console.log(res.data);
-          console.log(res.data[0].updatetime);
+          // console.log(res.data[0].updatetime);
           // console.log(this.timetrans(res.data[0].createtime));
           for (let i = 0; i < res.data.length; i++) {
             res.data[i].createtime = this.timetrans(res.data[i].createtime);

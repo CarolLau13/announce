@@ -3,7 +3,7 @@
     <el-container>
       <el-aside width="200px">
         <el-menu
-          :default-openeds="['1', '3']"
+          :default-active="currentIndex"
           text-color="#b9c3d1"
           active-text-color="#5a9cf8"
           background-color="#334054"
@@ -68,11 +68,14 @@ export default {
       title: "管理后台",
       titles: ["管理后台", "公告管理", "用户管理"],
       currentUser: "",
+      currentIndex: "",
     };
   },
   created() {
-    // console.log("已刷新");
-    this.$router.push("/admin/dashboard");
+    // 刷新后停留在当前页面
+    this.currentIndex = localStorage.getItem("currentIndex");
+    this.title = this.titles[this.currentIndex];
+
     axios
       .get("/api/users/current")
       .then((res) => {
@@ -90,12 +93,15 @@ export default {
       switch (index) {
         case "0":
           this.$router.push("/admin/dashboard");
+          localStorage.setItem("currentIndex", 0);
           break;
         case "1":
           this.$router.push("/announceManage");
+          localStorage.setItem("currentIndex", 1);
           break;
         case "2":
           this.$router.push("/userManagement");
+          localStorage.setItem("currentIndex", 2);
           break;
       }
     },
