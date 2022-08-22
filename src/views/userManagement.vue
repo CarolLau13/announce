@@ -1,7 +1,11 @@
 <template>
   <div id="announceManage">
     <el-table :data="userName" style="width: 100%">
-      <el-table-column prop="name" label="用户" width="300"> </el-table-column>
+      <el-table-column
+        prop="username"
+        label="用户"
+        width="300"
+      ></el-table-column>
       <el-table-column prop="manipualte" label="操作">
         <template slot-scope="scope">
           <el-button
@@ -83,7 +87,7 @@ export default {
   methods: {
     getInfo() {
       axios
-        .get("http://localhost:30000/users")
+        .get("/api/users")
         .then((res) => {
           // console.log(res.data);
           this.userName = res.data;
@@ -106,7 +110,7 @@ export default {
       })
         .then(() => {
           axios
-            .delete("http://localhost:30000/users", {
+            .delete("/api/users", {
               data: {
                 id: row.id,
               },
@@ -139,7 +143,7 @@ export default {
         this.addDialogFormVisible = false;
         let newUser = { name: this.addUserName, password: this.password };
         axios
-          .put("http://localhost:30000/users", newUser)
+          .put("/api/users", newUser)
           .then((res) => {
             console.log(res.data.success);
             if (res.data.success) {

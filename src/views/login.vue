@@ -36,7 +36,7 @@ export default {
   methods: {
     login() {
       axios
-        .post("http://localhost:30000/admin/login", {
+        .post("/api/admin/login", {
           username: this.username,
           password: this.password,
         })

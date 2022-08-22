@@ -42,7 +42,7 @@ export default {
   methods: {
     getInfo() {
       axios
-        .get("http://localhost:30000/users/current")
+        .get("/api/users/current")
         .then((res) => {
           // console.log(res.data.id);
           this.currentId = res.data.id;
@@ -59,7 +59,7 @@ export default {
       if (this.orginPassword !== this.newPassword) {
         if (this.orginPassword.length !== 0 && this.newPassword.length !== 0) {
           axios
-            .post("http://localhost:30000/users", {
+            .post("/api/users", {
               id: this.currentId,
               oldpassword: this.orginPassword,
               newpassword: this.newPassword,
@@ -71,7 +71,7 @@ export default {
                   type: "success",
                   message: "修改成功!",
                 });
-                axios.post("http://localhost:30000/admin/logout");
+                axios.post("/api/admin/logout");
                 this.$router.push("/admin/login");
               } else {
                 this.$message.error("原密码输入错误！");

@@ -20,7 +20,7 @@ export default {
     };
   },
   created() {
-    axios.get("http://localhost:30000/announce").then((res) => {
+    axios.get("/api/announce").then((res) => {
       // console.log(res.data);
       this.info = res.data;
       this.$message({

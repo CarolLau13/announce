@@ -71,10 +71,10 @@ export default {
     };
   },
   created() {
-    console.log("已刷新");
+    // console.log("已刷新");
     this.$router.push("/admin/dashboard");
     axios
-      .get("http://localhost:30000/users/current")
+      .get("/api/users/current")
       .then((res) => {
         // console.log(res.data.name);
         this.currentUser = res.data.name;
@@ -104,7 +104,7 @@ export default {
     },
     logout() {
       axios
-        .post("http://localhost:30000/admin/logout")
+        .post("/api/admin/logout")
         .then((res) => {
           // console.log(res);
           this.$router.push("/admin/login");

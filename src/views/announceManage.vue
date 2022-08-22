@@ -101,12 +101,33 @@ export default {
     this.getInfo();
   },
   methods: {
+    // 时间戳转换时间
+    timetrans(date) {
+      var date = new Date(date * 1000); //如果date为13位不需要乘1000
+      var Y = date.getFullYear() + "-";
+      var M =
+        (date.getMonth() + 1 < 10
+          ? "0" + (date.getMonth() + 1)
+          : date.getMonth() + 1) + "-";
+      var D =
+        (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + " ";
+      var h =
+        (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ":";
+      var m =
+        date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+      return Y + M + D + h + m;
+    },
     // 封装网络请求
     getInfo() {
       axios
-        .get("http://localhost:30000/announce")
+        .get("/api/announce")
         .then((res) => {
           // console.log(res.data);
+          // console.log(res.data[0].createtime);
+          // console.log(this.timetrans(res.data[0].createtime));
+          for (let i = 0; i < res.data.length; i++) {
+            res.data[i].createtime = this.timetrans(res.data[i].createtime);
+          }
           this.newInfo = res.data;
         })
         .catch((err) => {
@@ -134,7 +155,7 @@ export default {
       })
         .then(() => {
           axios
-            .delete("http://localhost:30000/announce", {
+            .delete("/api/announce", {
               data: {
                 id: row.id,
               },
@@ -162,7 +183,7 @@ export default {
       this.dialogFormVisible = false;
       // console.log("--------");
       axios
-        .post("http://localhost:30000/announce", {
+        .post("/api/announce", {
           title: this.announceTitle,
           id: this.currentId,
         })
@@ -195,7 +216,7 @@ export default {
         this.addDialogFormVisible = false;
         let newTitle = { title: this.addAnnounceTitle };
         axios
-          .put("http://localhost:30000/announce", newTitle)
+          .put("/api/announce", newTitle)
           .then((res) => {
             // console.log(res);
             this.getInfo();
