@@ -41,7 +41,10 @@ export default {
           password: this.password,
         })
         .then((res) => {
-          // console.log(res);
+          console.log(res.data.token);
+          // 保存登录令牌
+          let token = res.data.token;
+          localStorage.setItem("TOKEN", token);
           this.$message({
             type: "success",
             message: "登录成功!",

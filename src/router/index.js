@@ -20,7 +20,7 @@ const routes = [
   },
   {
     path: '/admin/login',
-    component: login
+    component: login,
   },
   {
     path: '/admin',
@@ -52,6 +52,15 @@ const routes = [
 const router = new VueRouter({
   routes,
   mode: 'history'
+})
+
+// 每次跳转登录页面时都要修改本地储存，导致重复代码过多，这里统一用导航守卫修改
+router.beforeEach((to, from, next) => {
+  console.log(to.fullPath)
+  if (to.fullPath == '/admin/login') {
+    localStorage.setItem("currentIndex", 0);
+  }
+  next()
 })
 
 // 3.导出router

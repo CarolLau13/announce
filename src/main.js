@@ -7,6 +7,16 @@ import axios from 'axios';
 
 axios.defaults.withCredentials = true;
 
+//全局请求拦截器
+axios.interceptors.request.use(config => {
+  // JWT认证
+  let token = localStorage.getItem('TOKEN')
+  config.headers.Authorization = 'Bearer ' + token
+  return config
+}, err => {
+  // console.log(err);
+})
+
 Vue.config.productionTip = false
 
 Vue.use(ElementUI);
