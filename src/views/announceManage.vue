@@ -51,7 +51,7 @@
           >
           <!-- 按新增按钮后的弹框 -->
           <el-dialog
-            title="编辑公告"
+            title="新增公告"
             :visible.sync="addDialogFormVisible"
             class="edit"
           >

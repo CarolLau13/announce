@@ -1,5 +1,9 @@
 <template>
-  <div style="height: 100%">
+  <div
+    style="height: 100%"
+    v-loading.fullscreen.lock="fullscreenLoading"
+    element-loading-text="拼命加载中"
+  >
     <el-container>
       <el-aside width="200px">
         <el-menu
@@ -9,21 +13,22 @@
           background-color="#334054"
           @select="handleSelect"
         >
-          <el-menu-item index="0">
+          <el-submenu v-for="(menu, index1) in menuItems" :index="index1">
             <template slot="title"
-              ><i class="el-icon-discover"></i>管理后台</template
+              ><i class="el-icon-discover"></i>{{ menu.name }}</template
             >
-          </el-menu-item>
-          <el-menu-item index="1">
-            <template slot="title"
-              ><i class="el-icon-info"></i>公告管理</template
+            <el-menu-item
+              v-for="(submenu, index2) in menu.subMenus"
+              :index="index1 + '-' + index2"
+              >{{ submenu.name }}</el-menu-item
             >
+          </el-submenu>
+          <!-- <el-menu-item index="1">
+            <template><i class="el-icon-info"></i>公告管理</template>
           </el-menu-item>
           <el-menu-item index="2">
-            <template slot="title"
-              ><i class="el-icon-user-solid"></i>用户管理</template
-            >
-          </el-menu-item>
+            <template><i class="el-icon-user-solid"></i>用户管理</template>
+          </el-menu-item> -->
         </el-menu>
       </el-aside>
 
@@ -69,6 +74,8 @@ export default {
       titles: ["管理后台", "公告管理", "用户管理"],
       currentUser: "",
       currentIndex: "",
+      menuItems: [],
+      fullscreenLoading: false,
     };
   },
   created() {
@@ -76,6 +83,15 @@ export default {
     this.currentIndex = localStorage.getItem("currentIndex");
     this.title = this.titles[this.currentIndex];
 
+    // 发送网络请求获取菜单栏
+    this.fullscreenLoading = true;
+    axios.get("/api/admin/menus").then((res) => {
+      // console.log(res.data);
+      this.menuItems = res.data;
+      this.fullscreenLoading = false;
+    });
+
+    // 发送网络请求获取当前用户名
     axios
       .get("/api/users/current")
       .then((res) => {
@@ -89,39 +105,54 @@ export default {
   methods: {
     handleSelect(index) {
       // console.log(index);
-      this.title = this.titles[index];
-      switch (index) {
-        case "0":
-          this.$router.push("/admin/dashboard");
-          localStorage.setItem("currentIndex", 0);
-          break;
-        case "1":
-          this.$router.push("/announceManage");
-          localStorage.setItem("currentIndex", 1);
-          break;
-        case "2":
-          this.$router.push("/userManagement");
-          localStorage.setItem("currentIndex", 2);
-          break;
-      }
+      let indexStrs = index.split("-");
+      console.log(indexStrs[0]);
+      console.log(indexStrs[1]);
+      this.title = this.menuItems[indexStrs[0]].subMenus[indexStrs[1]].name;
+      this.$router.push(
+        this.menuItems[indexStrs[0]].subMenus[indexStrs[1]].path
+      );
+      // console.log(this.menuItems[indexStrs[0]].subMenus[indexStrs[1]].path);
+      // console.log(this.menuItems[indexStrs[0]].subMenus[indexStrs[1]].name);
+      // switch (index) {
+      //   case "0":
+      //     this.$router.push("/admin/dashboard");
+      //     localStorage.setItem("currentIndex", 0);
+      //     break;
+      //   case "1":
+      //     this.$router.push("/announceManage");
+      //     localStorage.setItem("currentIndex", 1);
+      //     break;
+      //   case "2":
+      //     this.$router.push("/userManagement");
+      //     localStorage.setItem("currentIndex", 2);
+      //     break;
+      // }
     },
     modifyPass() {
       this.$router.push("/modifyPassword");
     },
     logout() {
-      axios
-        .post("/api/admin/logout")
-        .then((res) => {
-          // console.log(res);
-          this.$router.push("/admin/login");
-          this.$message({
-            type: "success",
-            message: "登出成功!",
-          });
-        })
-        .catch((err) => {
-          this.$message.error("登出失败");
-        });
+      localStorage.setItem("TOKEN", "");
+      this.$router.push("/admin/login");
+      this.$message({
+        type: "success",
+        message: "登出成功!",
+      });
+
+      // axios
+      //   .post("/api/admin/logout")
+      //   .then((res) => {
+      //     // console.log(res);
+      //     this.$router.push("/admin/login");
+      //     this.$message({
+      //       type: "success",
+      //       message: "登出成功!",
+      //     });
+      //   })
+      //   .catch((err) => {
+      //     this.$message.error("登出失败");
+      //   });
     },
   },
 };

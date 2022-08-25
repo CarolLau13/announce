@@ -8,6 +8,8 @@ const dashboard = () => import('../views/dashboard.vue')
 const announceManage = () => import('../views/announceManage.vue')
 const userManagement = () => import('../views/userManagement.vue')
 const modifyPassword = () => import('../views/modifyPassword.vue')
+const roleManage = () => import('../views/roleManage.vue')
+const permissionManage = () => import('../views/permissionManage.vue')
 
 // 1.安装插件
 Vue.use(VueRouter)
@@ -39,8 +41,12 @@ const routes = [
         component: announceManage
       },
       {
-        path: '/userManagement',
+        path: '/userManage',
         component: userManagement
+      },
+      {
+        path: '/roleManage',
+        component: roleManage
       },
     ]
   },
@@ -56,7 +62,7 @@ const router = new VueRouter({
 
 // 每次跳转登录页面时都要修改本地储存，导致重复代码过多，这里统一用导航守卫修改
 router.beforeEach((to, from, next) => {
-  console.log(to.fullPath)
+  // console.log(to.fullPath)
   if (to.fullPath == '/admin/login') {
     localStorage.setItem("currentIndex", 0);
   }
