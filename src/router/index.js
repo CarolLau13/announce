@@ -10,6 +10,7 @@ const userManagement = () => import('../views/userManagement.vue')
 const modifyPassword = () => import('../views/modifyPassword.vue')
 const roleManage = () => import('../views/roleManage.vue')
 const permissionManage = () => import('../views/permissionManage.vue')
+const unitTestManage = () => import('../views/unitTestManage.vue')
 
 // 1.安装插件
 Vue.use(VueRouter)
@@ -47,6 +48,14 @@ const routes = [
       {
         path: '/roleManage',
         component: roleManage
+      },
+      {
+        path: '/permissionManage',
+        component: permissionManage
+      },
+      {
+        path: '/unitTestManage',
+        component: unitTestManage
       },
     ]
   },

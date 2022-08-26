@@ -15,10 +15,37 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-            >删除</el-button
+            @click="editRolePermission(scope.$index, scope.row)"
+            >编辑</el-button
           >
+          <!-- 按编辑按钮后的弹框 -->
+          <el-dialog
+            title="权限管理"
+            :visible.sync="pmsManageDialogVisible"
+            width="30%"
+            :before-close="handleClose"
+          >
+            <el-tree
+              :data="allMenuData"
+              :props="defaultProps"
+              show-checkbox
+              node-key="menuid"
+              ref="tree"
+              v-loading="editDialogLoading"
+              element-loading-text="拼命加载中"
+            ></el-tree>
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="pmsManageDialogVisible = false"
+                >取 消</el-button
+              >
+              <el-button
+                type="primary"
+                @click="getCheckedKeys"
+                :disabled="isEditConfirmDisabled"
+                >确 定</el-button
+              >
+            </span>
+          </el-dialog>
         </template>
       </el-table-column>
 
@@ -72,6 +99,16 @@ export default {
       addRoleName: "",
       addDialogFormVisible: false,
       tableLoading: false,
+      pmsManageDialogVisible: false,
+      allMenuData: [],
+      defaultProps: {
+        children: "subMenus",
+        label: "name",
+      },
+      defaultCheckbox: [],
+      editDialogLoading: false,
+      isEditConfirmDisabled: false,
+      currentRoleId: "",
     };
   },
   created() {
@@ -83,7 +120,7 @@ export default {
       axios
         .get("/api/users/roles")
         .then((res) => {
-          // console.log(res.data);
+          // console.log(res);
           this.roleNames = res.data;
           this.tableLoading = false;
         })
@@ -95,41 +132,58 @@ export default {
           }
         });
     },
-    // 监听删除按钮
-    handleDelete(index, row) {
-      // console.log(row);
-      this.$confirm("此操作将永久删除该角色, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          this.tableLoading = true;
-          axios
-            .post("/api/users/deleterole", {
-              roleid: row.roleid,
-              roleName: row.roleName,
-            })
-            .then((res) => {
-              //   console.log(res);
-              this.getInfo();
-              this.$message({
-                type: "success",
-                message: "删除成功!",
-              });
-            })
-            .catch((err) => {
-              if (err.response.status === 401) {
-                this.$router.push("/admin/login");
-                this.tableLoading = false;
-              } else {
-                this.$message("删除失败！");
-                this.tableLoading = false;
-              }
-            });
-        })
-        .catch(() => {});
+
+    // 监听编辑按钮
+    editRolePermission(index, row) {
+      this.pmsManageDialogVisible = true;
+      this.editDialogLoading = true;
+      this.isEditConfirmDisabled = true;
+      // console.log(row.roleid);
+      this.currentRoleId = row.roleid;
+      axios.get("/api/users/allmenus").then((res) => {
+        console.log(res.data);
+        this.allMenuData = res.data;
+        axios
+          .get("/api/users/menusbyrole" + "?roleid=" + this.currentRoleId)
+          .then((res) => {
+            console.log(res.data);
+            this.defaultCheckbox = res.data;
+            this.$refs.tree.setCheckedKeys(this.defaultCheckbox);
+            this.editDialogLoading = false;
+            this.isEditConfirmDisabled = false;
+          });
+      });
     },
+
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then((_) => {
+          done();
+        })
+        .catch((_) => {});
+    },
+
+    // 监听按编辑按钮后弹框中的确认按钮
+    getCheckedKeys() {
+      this.editDialogLoading = true;
+      this.isEditConfirmDisabled = true;
+      // console.log(this.$refs.tree.getCheckedKeys());
+      this.defaultCheckbox = this.$refs.tree.getCheckedKeys();
+      axios
+        .post("/api/users/modifypermission", {
+          roleid: this.currentRoleId,
+          menuids: this.defaultCheckbox,
+        })
+        .then((res) => {
+          this.pmsManageDialogVisible = false;
+          this.editDialogLoading = false;
+          this.$message({
+            type: "success",
+            message: "修改成功!",
+          });
+        });
+    },
+
     // 监听新增按钮
     handleAdd() {
       this.addDialogFormVisible = true;
