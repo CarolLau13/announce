@@ -7,8 +7,8 @@
       >
     </div>
     <el-table :data="info" style="width: 100%">
-      <el-table-column prop="title" label="标题" width="200"> </el-table-column>
-      <el-table-column prop="createtime" label="创建时间" width="200">
+      <el-table-column prop="title" label="标题" width="500"> </el-table-column>
+      <el-table-column prop="createtime" label="创建时间" width="300">
       </el-table-column>
       <el-table-column prop="updatetime" label="更新时间"> </el-table-column>
     </el-table>
@@ -74,6 +74,7 @@ export default {
   width: 100%;
   height: 50px;
   line-height: 50px;
+  margin-bottom: 10px;
   background-color: #555c63;
   color: #fff;
 }
@@ -81,6 +82,7 @@ export default {
 .homeHeader span {
   font-size: 20px;
   padding-left: 9px;
+  font-weight: 700;
 }
 
 .homeHeader .el-button {
