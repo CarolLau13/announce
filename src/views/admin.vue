@@ -7,7 +7,8 @@
     <el-container>
       <el-aside width="200px">
         <el-menu
-          :default-active="currentIndex"
+          ref="menu"
+          :default-active="currentIndexStrs"
           text-color="#b9c3d1"
           active-text-color="#5a9cf8"
           background-color="#334054"
@@ -71,23 +72,36 @@ export default {
   data() {
     return {
       title: "管理后台",
-      titles: ["管理后台", "公告管理", "用户管理"],
+      // titles: ["管理后台", "公告管理", "用户管理"],
       currentUser: "",
-      currentIndex: "",
+      // currentIndex: "",
       menuItems: [],
       fullscreenLoading: false,
+      currentIndexStrs: "",
     };
   },
   created() {
     // 刷新后停留在当前页面
-    this.currentIndex = localStorage.getItem("currentIndex");
-    this.title = this.titles[this.currentIndex];
+    // this.currentIndex = localStorage.getItem("currentIndex");
+    // this.title = this.titles[this.currentIndex];
 
     // 发送网络请求获取菜单栏
     this.fullscreenLoading = true;
     axios.get("/api/admin/menus").then((res) => {
       // console.log(res.data);
       this.menuItems = res.data;
+
+      let strs = localStorage.getItem("indexStrs");
+      if (strs != "") {
+        let strsAfterSplit = strs.split(",");
+        this.title =
+          this.menuItems[strsAfterSplit[0]].subMenus[strsAfterSplit[1]].name;
+        this.$router.push(
+          this.menuItems[strsAfterSplit[0]].subMenus[strsAfterSplit[1]].path
+        );
+        this.currentIndexStrs = strsAfterSplit[0] + "-" + strsAfterSplit[1];
+      }
+
       this.fullscreenLoading = false;
     });
 
@@ -106,8 +120,10 @@ export default {
     handleSelect(index) {
       // console.log(index);
       let indexStrs = index.split("-");
-      console.log(indexStrs[0]);
-      console.log(indexStrs[1]);
+      localStorage.setItem("indexStrs", indexStrs);
+      // console.log(indexStrs);
+      // console.log(indexStrs[0]); //一级菜单栏的索引
+      // console.log(indexStrs[1]); //二级菜单栏的索引
       this.title = this.menuItems[indexStrs[0]].subMenus[indexStrs[1]].name;
       this.$router.push(
         this.menuItems[indexStrs[0]].subMenus[indexStrs[1]].path

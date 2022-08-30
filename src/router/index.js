@@ -73,7 +73,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   // console.log(to.fullPath)
   if (to.fullPath == '/admin/login') {
-    localStorage.setItem("currentIndex", 0);
+    localStorage.setItem("indexStrs", '');
   }
   next()
 })
